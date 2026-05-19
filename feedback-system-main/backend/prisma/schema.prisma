@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+enum Role {
+  USER
+  STUDENT
+  ADMIN
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(STUDENT) 
+  createdAt DateTime @default(now())
+
+  feedbacks Feedback[]
+}
+
+model Feedback {
+  id                String   @id @default(cuid())
+  
+  // حقول البيانات الأساسية
+  company           String?
+  country           String?
+  contact           String?
+  email             String?
+  orderNumber       String?
+
+  overallRating     Int
+  recommend         String?
+  workAgain         String?
+  priceSuitability  String?
+
+  liked             String?
+  improve           String?
+  suggestions       String?
+
+  ratings           Json     
+
+  createdAt         DateTime @default(now())
+  userId            Int
+  user              User     @relation(fields: [userId], references: [id])
+}
+model Admin {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+}
